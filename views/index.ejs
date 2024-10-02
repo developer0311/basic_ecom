@@ -79,6 +79,53 @@
     </div>
 </section>
 
+<section class="home-container-3 home-items-section">
+    <h3>Mens</h3>
+    <div class="home-product-cards-wrapper">
+        <button id="leftBtn" class="carousel-btn" style="display: none;">&#10094;</button>
+        <div class="home-product-cards">
+            <% for(let i = 0; i < mensWear.length; i++) { %>
+                <div class="card-items">
+                    <a href="/specific?id=<%= mensWear[i].id %>" class="card">
+                        <div class="img-container">
+                            <img src="<%= mensWear[i].image_url %>" class="card-img-top" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-title"><%= mensWear[i].name %></p>
+                            <p class="card-text">From ₹<%= mensWear[i].price %></p>
+                        </div>
+                    </a>
+                </div>
+            <% } %>
+        </div>
+        <button id="rightBtn" class="carousel-btn">&#10095;</button>
+    </div>
+</section>
+
+<section class="home-container-3 home-items-section">
+    <h3>Womens</h3>
+    <div class="home-product-cards-wrapper">
+        <button id="leftBtn" class="carousel-btn" style="display: none;">&#10094;</button>
+        <div class="home-product-cards">
+            <% console.log(womensWear) %>
+            <% for(let i = 0; i < womensWear.length; i++) { %>
+                <div class="card-items">
+                    <a href="/specific?id=<%= womensWear[i].id %>" class="card">
+                        <div class="img-container">
+                            <img src="<%= womensWear[i].image_url %>" class="card-img-top" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-title"><%= womensWear[i].name %></p>
+                            <p class="card-text">From ₹<%= womensWear[i].price %></p>
+                        </div>
+                    </a>
+                </div>
+            <% } %>
+        </div>
+        <button id="rightBtn" class="carousel-btn">&#10095;</button>
+    </div>
+</section>
+
 
 
 <%- include('partials/footer.ejs') %>

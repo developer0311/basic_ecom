@@ -98,7 +98,10 @@ app.get("/home", async (req, res) => {
       const user = req.user;
       let username = get_username(user.email)
       const e_result = await db.query('SELECT * FROM products WHERE category = $1', ["electronics"]);
-      res.render(__dirname + "/views/index.ejs", { electronics: e_result.rows, profile_name: username || 'Guest' });
+      const m_result = await db.query('SELECT * FROM products WHERE category = $1', ["mens clothing"]);
+      const w_result = await db.query('SELECT * FROM products WHERE category = $1', ["womens clothing"]);
+      
+      res.render(__dirname + "/views/index.ejs", { electronics: e_result.rows, mensWear: m_result.rows, womensWear: w_result.rows, profile_name: username || 'Guest' });
     } catch (err) {
       console.log(err);
     }
