@@ -13,11 +13,6 @@ CREATE TABLE products (
 );
 
 
-
-
-
-
-
 ------------------------------- USER TABLE -------------------------------
 
 CREATE TABLE users (
