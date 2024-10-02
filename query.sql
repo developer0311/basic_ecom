@@ -13,6 +13,37 @@ CREATE TABLE products (
 );
 
 
+
+
+
+
+
+------------------------------- USER TABLE -------------------------------
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+------------------------------- CART TABLE -------------------------------
+
+CREATE TABLE cart (
+    id SERIAL PRIMARY KEY,
+    product_id INT REFERENCES products(id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+
 INSERT INTO products (name, max_price, price, offer_percent, description, image_url, category, created_at)
 VALUES
 ('Realme buds Air 6', 5999.00, 2799.00, 53, 'High-quality wireless headphones with active noise cancellation.', 'https://rukminim2.flixcart.com/image/612/612/xif0q/headphone/t/n/x/buds-air-6-realme-original-imah2hygm9gasqft.jpeg?q=70', 'electronics', CURRENT_TIMESTAMP);
@@ -36,27 +67,6 @@ VALUES
 ('ZEBRONICS PIXAPLAY 22', 9499.00, 37999.00, 75, 'No. 1 Projector.', 'https://rukminim2.flixcart.com/image/612/612/xif0q/projector/k/f/0/zeb-pixaplay-22-green-16-zeb-pixaplay-22-green-led-zebronics-original-imagpqgasyrg2gzv.jpeg?q=70', 'electronics', CURRENT_TIMESTAMP);
 
 ('CAMPUS', 499.00, 399.00, 10, 'High-quality wireless headphones with env noise cancellation.', 'https://rukminim2.flixcart.com/image/612/612/xif0q/shoe/q/r/j/-original-imagzjg25cg9wsrj.jpeg?q=70', 'footware', CURRENT_TIMESTAMP);
-
-
-
-
-------------------------------- USER TABLE -------------------------------
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-------------------------------- CART TABLE -------------------------------
-
-CREATE TABLE cart (
-    id SERIAL PRIMARY KEY,
-    product_id INT REFERENCES products(id) ON DELETE CASCADE,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE
-);
 
 -- Insert items for user with ID 1
 INSERT INTO cart (product_id, user_id) VALUES
