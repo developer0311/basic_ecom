@@ -26,10 +26,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                        <a class="nav-link <%= homeActive %>" href="/home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/cart">
+                        <a class="nav-link <%= cartActive %>" href="/cart">
                             <i class='bx bx-cart-alt'></i>
                             Cart
                         </a>
@@ -41,6 +41,7 @@
                             <%= profile_name %>
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/admin-login"><i class='bx bx-user-x'></i>Admin</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

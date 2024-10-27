@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit product - Admin Panel</title>
+    <link rel="icon" href="/images/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Edit Product</h1>
+        <a href="/admin/1234/products">Back to Manage products</a>
+    </header>
+
+    <main class="container-fluid mt-4">
+        <section class="edit-product container-fluid">
+            <h2>Update product Details</h2>
+
+            <form action="/admin/products/update/<%= product_detail.id%>" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" id="title" name="title" class="form-control" value="<%= product_detail.title %>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="subtitle" class="form-label">Subtitle:</label>
+                    <input type="text" id="subtitle" name="subtitle" class="form-control" value="<%= product_detail.subtitle %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="author_name" class="form-label">Author Name:</label>
+                    <input type="text" id="author_name" name="author_name" class="form-control" value="<%= product_detail.author_name %>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="publish_date" class="form-label">Publish Date:</label>
+                    <input type="date" id="publish_date" name="publish_date" class="form-control" value="<%= product_detail.publish_date %>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea id="description" name="description" class="form-control" required><%= product_detail.description %></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image_url" class="form-label">Image URL:</label>
+                    <input type="text" id="image_url" name="image_url" class="form-control" value="<%= product_detail.image_url %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="pdf_drive_url" class="form-label">PDF Drive Url:</label>
+                    <input type="text" id="pdf_drive_url" name="pdf_drive_url" class="form-control" value="<%= product_detail.pdf_drive_url %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="likes" class="form-label">Likes:</label>
+                    <input type="number" id="likes" name="likes" class="form-control" value="<%= product_detail.likes %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="shares" class="form-label">Shares:</label>
+                    <input type="number" id="shares" name="shares" class="form-control" value="<%= product_detail.shares %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="downloads" class="form-label">Downloads:</label>
+                    <input type="number" id="downloads" name="downloads" class="form-control" value="<%= product_detail.downloads %>">
+                </div>
+
+                <button type="submit" class="btn btn-success">Update product</button>
+            </form>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+</html>
