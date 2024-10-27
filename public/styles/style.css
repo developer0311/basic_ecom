@@ -314,9 +314,15 @@ footer i{
 
 /*-------------------------- CART.ejs --------------------------*/
 
-/* .cart-container{
-    
-} */
+.cart_options{
+    display: flex;
+    justify-content: center;
+}
+
+.cart_options > *{
+    width: 70px;
+    margin: 0px 5px;
+}
 
 
 /*-------------------------- LOGIN.ejs & REGISTER.ejs --------------------------*/

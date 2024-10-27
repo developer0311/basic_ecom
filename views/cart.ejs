@@ -17,7 +17,10 @@
                     <form action="/cart/remove" method="POST" class="d-inline remove-button">
                         <input type="hidden" name="cartId" value="<%= item.cart_id %>">
                         <input type="hidden" name="userId" value="<%= item.user_id %>">
-                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        <div class="cart_options">
+                            <a href="/specific?id=<%= item.product_id %>" class="btn btn-info btn-sm">View</a>
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </div>
                     </form>
                     
                 </li>

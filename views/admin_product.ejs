@@ -29,32 +29,46 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Publish Date</th>
-                            <th scope="col">Likes</th>
-                            <th scope="col">Shares</th>
-                            <th scope="col">Downloads</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Max Price</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Offer Percent</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Category</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
-                    <% products.forEach(product => { %>
-                     
                     
+                    <% products.forEach(product=> { %>
+
                         <tbody>
                             <tr>
                                 <td scope="col">
                                     <%= product.id %>
                                 </td>
-                                <td scope="col"><%= product.title %></td>
-                                <td scope="col"><%=product.author_name %></td>
-                                <td scope="col"><%= product.publish_date.toString().split(" ").slice(0, 4).join(" ") %></td>
-                                <td scope="col"><%=product.likes %></td>
-                                <td scope="col"><%=product.shares %></td>
-                                <td scope="col"><%=product.downloads %></td>
+                                <td scope="col">
+                                    <%= product.name %>
+                                </td>
+                                <td scope="col">
+                                    <%=product.max_price %>
+                                </td>
+                                <td scope="col">
+                                    <%= product.price %>
+                                </td>
+                                <td scope="col">
+                                    <%=product.offer_percent %>%
+                                </td>
+                                <td scope="col">
+                                    <%=product.description %>
+                                </td>
+                                <td scope="col">
+                                    <%=product.category %>
+                                </td>
                                 <td scope="col" class="actions" colspan="2">
-                                    <a class="btn btn-primary" href="/admin/1234/products/edit/<%= product.id %>">Edit</a> |
-                                    <a class="btn btn-danger" href="/admin/1234/products/delete/<%= product.id %>">Delete</a>
+                                    <a class="btn btn-primary"
+                                        href="/admin/1234/products/edit/<%= product.id %>">Edit</a> |
+                                    <a class="btn btn-danger"
+                                        href="/admin/1234/products/delete/<%= product.id %>">Delete</a>
                                 </td>
                             </tr>
                         </tbody>

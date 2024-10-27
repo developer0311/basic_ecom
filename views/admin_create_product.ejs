@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Create Book</title>
+    <title>Admin Panel - Create Product</title>
     <link rel="icon" href="/images/favicon.ico">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -15,33 +15,33 @@
 <body>
 
     <header>
-        <h1>Books Management</h1>
+        <h1>Products Management</h1>
         <a href="/admin/1234">Back to Dashboard</a>
     </header>
 
     <main class="container-fluid mt-4">
-        <section class="add-book container-fluid">
-            <h2>Add New Book</h2>
+        <section class="add-product container-fluid">
+            <h2>Add New Product</h2>
 
-            <form class="container-fluid" action="/admin/books/create" method="POST" enctype="multipart/form-data">
+            <form class="container-fluid" action="/admin/products/create" method="POST">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title:</label>
-                    <input type="text" id="title" name="title" class="form-control" required>
+                    <label for="name" class="form-label">Product Name:</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="subtitle" class="form-label">Subtitle:</label>
-                    <input type="text" id="subtitle" name="subtitle" class="form-control" required>
+                    <label for="max_price" class="form-label">Max Price:</label>
+                    <input type="text" id="max_price" name="max_price" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="author_name" class="form-label">Author Name:</label>
-                    <input type="text" id="author_name" name="author_name" class="form-control" required>
+                    <label for="price" class="form-label">Price:</label>
+                    <input type="text" id="price" name="price" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="publish_date" class="form-label">Publish Date:</label>
-                    <input type="date" id="publish_date" name="publish_date" class="form-control" required>
+                    <label for="offer_percent" class="form-label">Offer Percent:</label>
+                    <input type="number" id="offer_percent" name="offer_percent" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
@@ -51,36 +51,17 @@
 
                 <!-- New Cover Image Upload Section -->
                 <div class="mb-3">
-                    <label for="cover_image" class="form-label">Cover Page Image:</label>
-                    <input type="file" id="cover_image" name="cover_image" class="form-control" accept="image/*" required>
+                    <label for="image_url" class="form-label">Image Url:</label>
+                    <input type="url" id="image_url" name="image_url" class="form-control" accept="image/*" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="pdf_file" class="form-label">PDF File:</label>
-                    <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf" required>
+                    <label for="category" class="form-label">Category:</label>
+                    <input type="text" id="category" name="category" class="form-control" accept="application/pdf" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="drive_pdf_url" class="form-label">Drive PDF Url:</label>
-                    <input type="url" id="drive_pdf_url" name="drive_pdf_url" class="form-control" required>
-                </div>
 
-                <div class="mb-3">
-                    <label for="likes" class="form-label">Likes:</label>
-                    <input type="number" id="likes" name="likes" class="form-control" value="100" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="shares" class="form-label">Shares:</label>
-                    <input type="number" id="shares" name="shares" class="form-control" value="12" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="downloads" class="form-label">Downloads:</label>
-                    <input type="number" id="downloads" name="downloads" class="form-control" value="10" required>
-                </div>
-
-                <button type="submit" class="btn btn-success">Add book</button>
+                <button type="submit" class="btn btn-success">Add product</button>
             </form>
 
         </section>

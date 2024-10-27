@@ -23,25 +23,25 @@
         <section class="edit-product container-fluid">
             <h2>Update product Details</h2>
 
-            <form action="/admin/products/update/<%= product_detail.id%>" method="POST" enctype="multipart/form-data">
+            <form action="/admin/products/update/<%= product_detail.id%>" method="POST">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title:</label>
-                    <input type="text" id="title" name="title" class="form-control" value="<%= product_detail.title %>" required>
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" id="name" name="name" class="form-control" value="<%= product_detail.name %>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="subtitle" class="form-label">Subtitle:</label>
-                    <input type="text" id="subtitle" name="subtitle" class="form-control" value="<%= product_detail.subtitle %>">
+                    <label for="max_price" class="form-label">Max Price:</label>
+                    <input type="text" id="max_price" name="max_price" class="form-control" value="<%= product_detail.max_price %>">
                 </div>
 
                 <div class="mb-3">
-                    <label for="author_name" class="form-label">Author Name:</label>
-                    <input type="text" id="author_name" name="author_name" class="form-control" value="<%= product_detail.author_name %>" required>
+                    <label for="price" class="form-label">Price:</label>
+                    <input type="text" id="price" name="price" class="form-control" value="<%= product_detail.price %>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="publish_date" class="form-label">Publish Date:</label>
-                    <input type="date" id="publish_date" name="publish_date" class="form-control" value="<%= product_detail.publish_date %>" required>
+                    <label for="offer_percent" class="form-label">Offer Percent:</label>
+                    <input type="number" id="offer_percent" name="offer_percent" class="form-control" value="<%= product_detail.offer_percent %>" required>
                 </div>
 
                 <div class="mb-3">
@@ -55,23 +55,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="pdf_drive_url" class="form-label">PDF Drive Url:</label>
-                    <input type="text" id="pdf_drive_url" name="pdf_drive_url" class="form-control" value="<%= product_detail.pdf_drive_url %>">
-                </div>
-
-                <div class="mb-3">
-                    <label for="likes" class="form-label">Likes:</label>
-                    <input type="number" id="likes" name="likes" class="form-control" value="<%= product_detail.likes %>">
-                </div>
-
-                <div class="mb-3">
-                    <label for="shares" class="form-label">Shares:</label>
-                    <input type="number" id="shares" name="shares" class="form-control" value="<%= product_detail.shares %>">
-                </div>
-
-                <div class="mb-3">
-                    <label for="downloads" class="form-label">Downloads:</label>
-                    <input type="number" id="downloads" name="downloads" class="form-control" value="<%= product_detail.downloads %>">
+                    <label for="category" class="form-label">Category:</label>
+                    <input type="text" id="category" name="category" class="form-control" value="<%= product_detail.category %>">
                 </div>
 
                 <button type="submit" class="btn btn-success">Update product</button>

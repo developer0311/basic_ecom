@@ -14,7 +14,7 @@ const app = express();
 const port = process.env.SERVER_PORT;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const saltRounds = 10;
-const admin_password = process.env.ADMIN_PASSWORD
+const admin_password = process.env.ADMIN_PASSWORD;
 let home_active = "active";
 let cart_active = "";
 
@@ -263,12 +263,15 @@ app.get("/login", (req, res) => {
     ? get_username(req.user.email)
     : "Guest"; // Check if user is authenticated
   active_page("home");
-  res.render(__dirname + "/views/login.ejs", { profile_name: username, 
+  res.render(__dirname + "/views/login.ejs", {
+    profile_name: username,
     homeActive: home_active,
-    cartActive: cart_active, });
+    cartActive: cart_active,
+  });
 });
 
-app.post("/login",
+app.post(
+  "/login",
   passport.authenticate("local", {
     successRedirect: "/home",
     failureRedirect: "/login",
@@ -281,10 +284,12 @@ app.get("/register", (req, res) => {
   const username = req.isAuthenticated()
     ? get_username(req.user.email)
     : "Guest"; // Check if user is authenticated
-    active_page("home");
-  res.render(__dirname + "/views/register.ejs", { profile_name: username, 
+  active_page("home");
+  res.render(__dirname + "/views/register.ejs", {
+    profile_name: username,
     homeActive: home_active,
-    cartActive: cart_active, });
+    cartActive: cart_active,
+  });
 });
 
 app.post("/register", async (req, res) => {
@@ -440,29 +445,29 @@ app.get(`/admin/${admin_password}/products`, async (req, res) => {
   res.render(__dirname + "/views/admin_product.ejs", { products: result.rows });
 });
 
-app.get(`/admin/${admin_password}/products/edit/:productId`, async (req, res) => {
-  const productId = req.params.productId;
-  let result = await db.query("SELECT * FROM products where id=$1", [productId]);
-  res.render(__dirname + "/views/admin_product_edit.ejs", {
-    product_detail: result.rows[0],
-  });
-});
+app.get(`/admin/${admin_password}/products/edit/:productId`,
+  async (req, res) => {
+    const productId = req.params.productId;
+    let result = await db.query("SELECT * FROM products where id=$1", [
+      productId,
+    ]);
+    res.render(__dirname + "/views/admin_product_edit.ejs", {
+      product_detail: result.rows[0],
+    });
+  }
+);
 
-app.get(`/admin/${admin_password}/products/delete/:productId`, async (req, res) => {
-  const productId = req.params.productId;
-  let result = await db.query("SELECT * FROM products where id=$1", [productId]);
-  res.render(__dirname + "/views/admin_product_confirm_delete.ejs", {
-    product_detail: result.rows[0],
-  });
-});
-
-app.get(`/admin/${admin_password}/users`, (req, res) => {
-  res.render(__dirname + "/views/admin_users.ejs");
-});
-
-app.get(`/admin/${admin_password}/comments`, (req, res) => {
-  res.render(__dirname + "/views/admin_comments.ejs");
-});
+app.get(`/admin/${admin_password}/products/delete/:productId`,
+  async (req, res) => {
+    const productId = req.params.productId;
+    let result = await db.query("SELECT * FROM products where id=$1", [
+      productId,
+    ]);
+    res.render(__dirname + "/views/admin_product_confirm_delete.ejs", {
+      product_detail: result.rows[0],
+    });
+  }
+);
 
 app.get(`/admin/logout`, async (req, res) => {
   active_page("home");
@@ -515,156 +520,105 @@ app.post("/admin-login", async (req, res) => {
 //------------------------------------------------------ ADMIN CREATE NEW product ------------------------------------------------------//
 
 // Route to handle product creation with both PDF and cover image upload
-// app.post("/admin/products/create",
-//   upload.fields([
-//     { name: "pdf_file", maxCount: 1 },
-//     { name: "cover_image", maxCount: 1 },
-//   ]),
-//   async (req, res) => {
-//     try {
-//       const {
-//         title,
-//         subtitle,
-//         author_name,
-//         publish_date,
-//         description,
-//         drive_pdf_url,
-//         likes,
-//         shares,
-//         downloads,
-//       } = req.body;
+app.post("/admin/products/create", async (req, res) => {
+  try {
+    const {
+      name,
+      max_price,
+      price,
+      offer_percent,
+      description,
+      image_url,
+      category,
+    } = req.body;
 
-//       const coverImage = req.files["cover_image"][0];
-//       const pdfFile = req.files["pdf_file"][0];
 
-//       const coverImageUploadResult = await handleCloudinaryImageUpload(
-//         path.resolve(coverImage.path),
-//         path.basename(
-//           coverImage.originalname,
-//           path.extname(coverImage.originalname)
-//         )
-//       );
+    const result = await db.query(
+      `INSERT INTO products (name, max_price, price, offer_percent, description, image_url, category)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *`,
+      [
+        name,
+      max_price,
+      price,
+      offer_percent,
+      description,
+      image_url,
+      category, // Default to 10 if not provided
+      ]
+    );
+    res.redirect(`/admin/${admin_password}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//       const pdfResult = await handleCloudinaryPDFUpload(
-//         path.resolve(pdfFile.path),
-//         path.basename(pdfFile.originalname, path.extname(pdfFile.originalname))
-//       );
+//------------------------------------------------------ ADMIN EDIT product ------------------------------------------------------//
 
-//       // Delete local files after successful upload
-//       deleteFile(path.resolve(coverImage.path));
-//       deleteFile(path.resolve(pdfFile.path));
+app.post("/admin/products/update/:productId", async (req, res) => {
+    const productId = req.params.productId; // Get the productId from the request parameters
+    const {
+      name,
+      max_price,
+      price,
+      offer_percent,
+      description,
+      image_url,
+      category,
+    } = req.body;
 
-//       let pdf_download_link = `https://res-console.cloudinary.com/dimlxk34m/media_explorer_thumbnails/${pdfResult.uploadResult.asset_id}/download`
+    // Update the product in the database
+    const updateResult = await db.query(
+      `UPDATE products
+           SET name = $1, max_price = $2, price = $3, offer_percent = $4,
+               description = $5, image_url = $6, category = $7 
+               WHERE id = $8 RETURNING *`,
+      [
+        name,
+        max_price,
+        price,
+        offer_percent,
+        description,
+        image_url,
+        category,
+        productId,
+      ]
+    );
 
-//       // Insert product data into the database with Cloudinary URLs
-//       const result = await db.query(
-//         `INSERT INTO products (title, subtitle, author_name, publish_date, description, image_name, image_url, pdf_name, pdf_url, pdf_drive_url, likes, shares, downloads)
-//         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-//         RETURNING *`,
-//         [
-//           title,
-//           subtitle,
-//           author_name,
-//           publish_date,
-//           description,
-//           coverImageUploadResult.uploadResult.public_id,
-//           coverImageUploadResult.uploadResult.secure_url, // Store Cloudinary URL for the image
-//           pdfResult.uploadResult.public_id,
-//           pdf_download_link, // Store Cloudinary URL for the PDF
-//           drive_pdf_url,
-//           likes || 100, // Default to 100 if not provided
-//           shares || 12, // Default to 12 if not provided
-//           downloads || 10, // Default to 10 if not provided
-//         ]
-//       );
-//       res.redirect(`/admin/${admin_password}`);
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-//   }
-// );
+    if (updateResult.rowCount > 0) {
+      // product updated successfully
+      res.redirect(`/admin/${admin_password}/products`); // Redirect to the products management page
+    } else {
+      // product not found
+      res.status(404).send("product not found");
+    }
+  }
+);
 
-// //------------------------------------------------------ ADMIN EDIT product ------------------------------------------------------//
 
-// app.post("/admin/products/update/:productId",
-//   upload.single("pdf_name"),
-//   async (req, res) => {
-//     const productId = req.params.productId; // Get the productId from the request parameters
-//     const {
-//       title,
-//       subtitle,
-//       author_name,
-//       publish_date,
-//       description,
-//       image_name,
-//       pdf_drive_url,
-//       likes,
-//       shares,
-//       downloads,
-//     } = req.body;
+//------------------------------------------------------ DELETE product ------------------------------------------------------//
 
-//     // Update the product in the database
-//     const updateResult = await db.query(
-//       `UPDATE products 
-//            SET title = $1, subtitle = $2, author_name = $3, publish_date = $4, 
-//                description = $5, image_name = $6, pdf_drive_url = $7, 
-//                likes = $8, shares = $9, downloads = $10 
-//            WHERE id = $11 RETURNING *`,
-//       [
-//         title,
-//         subtitle,
-//         author_name,
-//         publish_date,
-//         description,
-//         image_name,
-//         pdf_drive_url,
-//         likes,
-//         shares,
-//         downloads,
-//         productId,
-//       ]
-//     );
+app.post("/admin/products/delete/:productId", async (req, res) => {
+  const productId = req.params.productId; 
 
-//     if (updateResult.rowCount > 0) {
-//       // product updated successfully
-//       res.redirect(`/admin/${admin_password}/products`); // Redirect to the products management page
-//     } else {
-//       // product not found
-//       res.status(404).send("product not found");
-//     }
-//   }
-// );
+  try {
+    const productResult = await db.query(
+      "SELECT * FROM products WHERE id = $1",
+      [productId]
+    );
 
-// //------------------------------------------------------ DELETE product ------------------------------------------------------//
+    if (productResult.rowCount === 0) {
+      return res.status(404).send("product not found");
+    }
 
-// // Route to delete a product and its associated files
-// app.post("/admin/products/delete/:productId", async (req, res) => {
-//   const productId = req.params.productId; // Get the productId from the request parameters
+    await db.query("DELETE FROM products WHERE id = $1", [productId]);
 
-//   try {
-//     // First, retrieve the product data to get the file names
-//     const productResult = await db.query(
-//       "SELECT image_name, pdf_name FROM products WHERE id = $1",
-//       [productId]
-//     );
-
-//     if (productResult.rowCount === 0) {
-//       return res.status(404).send("product not found");
-//     }
-
-//     const product = productResult.rows[0];
-
-//     await handleCloudinaryImageDelete(product.image_name)
-//     await handleCloudinaryPDFDelete(product.pdf_name)
-
-//     await db.query("DELETE FROM products WHERE id = $1", [productId]);
-
-//     res.redirect(`/admin/${admin_password}/products`); // Redirect to the products management page
-//   } catch (error) {
-//     console.error("Error deleting product:", error);
-//     res.status(500).send("Server error");
-//   }
-// });
+    res.redirect(`/admin/${admin_password}/products`); 
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).send("Server error");
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
