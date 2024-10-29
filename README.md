@@ -10,6 +10,8 @@ DB_NAME=tour
 DB_PASSWORD=YOUR_PASSWORD
 DB_PORT=5432
 
+**Then import the product.csv in your db for sample products**
+
 
 #------------------------------- GOOGLE AUTH -------------------------------#
 GOOGLE_CLIENT_ID="YOUR GOOGLE CLIENT ID"
