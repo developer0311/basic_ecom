@@ -19,11 +19,14 @@ const admin_password = process.env.ADMIN_PASSWORD;
 let home_active = "active";
 let cart_active = "";
 
+app.set("view engine", "ejs");
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: { maxAge: 600000 },
   })
 );
 app.use(express.static("public"));
@@ -327,63 +330,128 @@ app.post("/register", async (req, res) => {
   }
 });
 
-
 //-------------------------- RESET PASSWORD Route --------------------------//
 
-app.get("/reset-password", (req, res)=>{
+app.get("/reset-password", (req, res) => {
   active_page("home");
   res.render(__dirname + "/views/reset_password.ejs", {
     profile_name: "Guest",
     homeActive: home_active,
     cartActive: cart_active,
-  })
+  });
 });
-
 
 // when otp requested then it will send otp via smtp
 app.post("/send-otp", async (req, res) => {
   const { email } = req.body;
-  console.log(req.body)
 
   if (!email) {
-      return res.status(400).json({ success: false, error: "Email is required." });
+    return res
+      .status(400)
+      .json({ success: false, error: "Email is required." });
   }
 
   try {
-      // Generate a random 6-digit OTP
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate a random 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // Configure SMTP transporter
-      const transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for port 465, false for other ports
-        service: "Gmail",
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      })
+    // Store OTP in session (you can also use a database or cache)
+    req.session.otp = otp;
+    req.session.email = email;
 
-      // Email options
-      const mailOptions = {
-          from: process.env.SMTP_USER,
-          to: email, // Use the email from the request body
-          subject: "Your OTP Code",
-          text: `Your OTP code is ${otp}. This code is valid for 10 minutes.`,
-      };
+    // Configure SMTP transporter (For Gmail service)
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for port 465, false for other ports
+      service: "Gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
 
-      // Send email
-      await transporter.sendMail(mailOptions);
+    // Email options
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: email, // Use the email from the request body
+      subject: "Your OTP Code",
+      text: `Your OTP code is ${otp}. This code is valid for 10 minutes.`,
+    };
 
-      // Respond with success
-      res.json({ success: true });
+    // Send email
+    await transporter.sendMail(mailOptions);
 
-      // (Optional) Save the OTP to the database or cache for verification
-      console.log(`OTP sent to ${email}: ${otp}`);
+    // Respond with success
+    res.json({ success: true });
+
+    console.log(`OTP sent to ${email}: ${otp}`);
   } catch (err) {
-      console.error("Error sending OTP:", err);
-      res.status(500).json({ success: false, error: "Failed to send OTP." });
+    console.error("Error sending OTP:", err);
+    res.status(500).json({ success: false, error: "Failed to send OTP." });
+  }
+});
+
+// when click on submit then check the user given otp with the generated otp, if matched then render new_password.ejs page
+app.post("/check-otp", async (req, res) => {
+  const { otp } = req.body;
+
+  // Retrieve OTP and email from session
+  const storedOtp = req.session.otp;
+  const email = req.session.email;
+
+  if (!storedOtp || !email) {
+    return res.status(400).json({
+      success: false,
+      error: "OTP session expired. Please request a new OTP.",
+    });
+  }
+
+  if (otp === storedOtp) {
+    // OTP is correct, render the new password page
+    active_page("home");
+    res.render("new_password", {
+      email: email,
+      profile_name: "Guest",
+      homeActive: home_active,
+      cartActive: cart_active,
+    });
+  } else {
+    // OTP is incorrect
+    res.status(400).json({
+      success: false,
+      error: "Invalid OTP. Please try again.",
+    });
+  }
+});
+
+app.post("/reset-password", async (req, res) => {
+  const { password, confirm_password } = req.body;
+
+  if (password !== confirm_password) {
+      return res.status(400).json({ success: false, error: "Passwords do not match." });
+  }
+
+  const email = req.session.email;
+  if (!email) {
+      return res.status(400).json({ success: false, error: "Session expired. Please request OTP again." });
+  }
+
+  try {
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Update the password in the database (assuming you have a `users` table with an `email` column)
+      await db.query("UPDATE users SET password = $1 WHERE email = $2", [hashedPassword, email]);
+
+      // Optionally, clear the OTP and email session
+      delete req.session.otp;
+      delete req.session.email;
+
+      res.redirect("/home");
+  } catch (err) {
+      console.error("Error resetting password:", err);
+      res.status(500).json({ success: false, error: "Failed to reset password." });
   }
 });
 
@@ -508,7 +576,8 @@ app.get(`/admin/${admin_password}/products`, async (req, res) => {
   res.render(__dirname + "/views/admin_product.ejs", { products: result.rows });
 });
 
-app.get(`/admin/${admin_password}/products/edit/:productId`,
+app.get(
+  `/admin/${admin_password}/products/edit/:productId`,
   async (req, res) => {
     const productId = req.params.productId;
     let result = await db.query("SELECT * FROM products where id=$1", [
@@ -520,7 +589,8 @@ app.get(`/admin/${admin_password}/products/edit/:productId`,
   }
 );
 
-app.get(`/admin/${admin_password}/products/delete/:productId`,
+app.get(
+  `/admin/${admin_password}/products/delete/:productId`,
   async (req, res) => {
     const productId = req.params.productId;
     let result = await db.query("SELECT * FROM products where id=$1", [
@@ -595,19 +665,18 @@ app.post("/admin/products/create", async (req, res) => {
       category,
     } = req.body;
 
-
     const result = await db.query(
       `INSERT INTO products (name, max_price, price, offer_percent, description, image_url, category)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *`,
       [
         name,
-      max_price,
-      price,
-      offer_percent,
-      description,
-      image_url,
-      category, // Default to 10 if not provided
+        max_price,
+        price,
+        offer_percent,
+        description,
+        image_url,
+        category, // Default to 10 if not provided
       ]
     );
     res.redirect(`/admin/${admin_password}`);
@@ -619,8 +688,24 @@ app.post("/admin/products/create", async (req, res) => {
 //------------------------------------------------------ ADMIN EDIT product ------------------------------------------------------//
 
 app.post("/admin/products/update/:productId", async (req, res) => {
-    const productId = req.params.productId; // Get the productId from the request parameters
-    const {
+  const productId = req.params.productId; // Get the productId from the request parameters
+  const {
+    name,
+    max_price,
+    price,
+    offer_percent,
+    description,
+    image_url,
+    category,
+  } = req.body;
+
+  // Update the product in the database
+  const updateResult = await db.query(
+    `UPDATE products
+           SET name = $1, max_price = $2, price = $3, offer_percent = $4,
+               description = $5, image_url = $6, category = $7 
+               WHERE id = $8 RETURNING *`,
+    [
       name,
       max_price,
       price,
@@ -628,41 +713,23 @@ app.post("/admin/products/update/:productId", async (req, res) => {
       description,
       image_url,
       category,
-    } = req.body;
+      productId,
+    ]
+  );
 
-    // Update the product in the database
-    const updateResult = await db.query(
-      `UPDATE products
-           SET name = $1, max_price = $2, price = $3, offer_percent = $4,
-               description = $5, image_url = $6, category = $7 
-               WHERE id = $8 RETURNING *`,
-      [
-        name,
-        max_price,
-        price,
-        offer_percent,
-        description,
-        image_url,
-        category,
-        productId,
-      ]
-    );
-
-    if (updateResult.rowCount > 0) {
-      // product updated successfully
-      res.redirect(`/admin/${admin_password}/products`); // Redirect to the products management page
-    } else {
-      // product not found
-      res.status(404).send("product not found");
-    }
+  if (updateResult.rowCount > 0) {
+    // product updated successfully
+    res.redirect(`/admin/${admin_password}/products`); // Redirect to the products management page
+  } else {
+    // product not found
+    res.status(404).send("product not found");
   }
-);
-
+});
 
 //------------------------------------------------------ DELETE product ------------------------------------------------------//
 
 app.post("/admin/products/delete/:productId", async (req, res) => {
-  const productId = req.params.productId; 
+  const productId = req.params.productId;
 
   try {
     const productResult = await db.query(
@@ -676,7 +743,7 @@ app.post("/admin/products/delete/:productId", async (req, res) => {
 
     await db.query("DELETE FROM products WHERE id = $1", [productId]);
 
-    res.redirect(`/admin/${admin_password}/products`); 
+    res.redirect(`/admin/${admin_password}/products`);
   } catch (error) {
     console.error("Error deleting product:", error);
     res.status(500).send("Server error");
