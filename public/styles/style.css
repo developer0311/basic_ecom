@@ -331,6 +331,23 @@ footer i{
     margin-bottom: 20px;
 }
 
+.forgot-password{
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px 20px 0px 20px;
+}
+
+.send-otp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.send-otp input {
+    flex: 1;
+    margin-right: 10px;
+}
+
 
 
 

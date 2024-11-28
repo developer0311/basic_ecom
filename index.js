@@ -325,6 +325,19 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
+//-------------------------- RESET PASSWORD Route --------------------------//
+
+app.get("/reset-password", (req, res)=>{
+  active_page("home");
+  res.render(__dirname + "/views/reset_password.ejs", {
+    profile_name: "Guest",
+    homeActive: home_active,
+    cartActive: cart_active,
+  })
+});
+
+
 //-------------------------- SPECIFIC ITEM Route --------------------------//
 
 app.get("/specific", (req, res) => {
