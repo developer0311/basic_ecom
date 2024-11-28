@@ -8,6 +8,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
+import nodemailer from "nodemailer";
 import "dotenv/config";
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(
   })
 );
 app.use(express.static("public"));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
@@ -335,6 +337,54 @@ app.get("/reset-password", (req, res)=>{
     homeActive: home_active,
     cartActive: cart_active,
   })
+});
+
+
+// when otp requested then it will send otp via smtp
+app.post("/send-otp", async (req, res) => {
+  const { email } = req.body;
+  console.log(req.body)
+
+  if (!email) {
+      return res.status(400).json({ success: false, error: "Email is required." });
+  }
+
+  try {
+      // Generate a random 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Configure SMTP transporter
+      const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for port 465, false for other ports
+        service: "Gmail",
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      })
+
+      // Email options
+      const mailOptions = {
+          from: process.env.SMTP_USER,
+          to: email, // Use the email from the request body
+          subject: "Your OTP Code",
+          text: `Your OTP code is ${otp}. This code is valid for 10 minutes.`,
+      };
+
+      // Send email
+      await transporter.sendMail(mailOptions);
+
+      // Respond with success
+      res.json({ success: true });
+
+      // (Optional) Save the OTP to the database or cache for verification
+      console.log(`OTP sent to ${email}: ${otp}`);
+  } catch (err) {
+      console.error("Error sending OTP:", err);
+      res.status(500).json({ success: false, error: "Failed to send OTP." });
+  }
 });
 
 
