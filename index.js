@@ -557,8 +557,8 @@ app.post("/createOrder", async (req, res) => {
                   key_id: RAZORPAY_ID_KEY,
                   product_name: name,
                   description: description,
-                  contact: "8567345632", // Replace with dynamic values if needed
-                  name: username, // Replace with dynamic values if needed
+                  contact: user.mobile_number, // Replace with dynamic values if needed
+                  name: user.first_name, // Replace with dynamic values if needed
                   email: user.email, // Replace with dynamic values if needed
               });
           } else {
