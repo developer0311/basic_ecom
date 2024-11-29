@@ -312,7 +312,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const { email, password, otp } = req.body;
+  const { email, password, otp, first_name, last_name, mobile_number } = req.body;
 
   try {
     // Validate session data for OTP and email
@@ -358,8 +358,9 @@ app.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const result = await db.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-      [email, hashedPassword]
+      `INSERT INTO users (first_name, last_name, mobile_number, email, password)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [first_name, last_name, mobile_number, email, hashedPassword]
     );
 
     const user = result.rows[0];
@@ -446,7 +447,6 @@ app.post("/send-otp", async (req, res) => {
     // Respond with success
     res.json({ success: true });
 
-    console.log(`OTP sent to ${email}: ${otp}`);
   } catch (err) {
     console.error("Error sending OTP:", err);
     res.status(500).json({ success: false, error: "Failed to send OTP." });
