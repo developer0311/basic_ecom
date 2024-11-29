@@ -298,37 +298,59 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const email = req.body.username;
-  const password = req.body.password;
+  const { email, password, otp } = req.body; // Extract email, password, and OTP from request body
 
   try {
-    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+    // Check if the email and OTP match the stored session
+    const storedOtp = req.session.otp;
+    const storedEmail = req.session.email;
+
+    if (!storedOtp || !storedEmail) {
+      return res.status(400).send("OTP session expired. Please request a new OTP.");
+    }
+
+    const isOtpValid = await bcrypt.compare(otp, storedOtp);
+    if (!isOtpValid || email !== storedEmail) {
+      return res.status(400).send("Invalid OTP or email mismatch. Please try again.");
+    }
+
+    // Check if the user is already registered
+    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
     if (checkResult.rows.length > 0) {
-      res.redirect("/login");
-    } else {
-      bcrypt.hash(password, saltRounds, async (err, hash) => {
-        if (err) {
-          console.error("Error hashing password:", err);
-        } else {
-          const result = await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-            [email, hash]
-          );
-          const user = result.rows[0];
-          req.login(user, (err) => {
-            console.log("success");
-            res.redirect("/home");
-          });
-        }
-      });
+      return res.redirect("/login");
     }
+
+    // Hash the password and register the user
+    bcrypt.hash(password, saltRounds, async (err, hash) => {
+      if (err) {
+        console.error("Error hashing password:", err);
+        return res.status(500).send("Internal server error.");
+      }
+
+      // Insert the new user into the database
+      const result = await db.query(
+        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+        [email, hash]
+      );
+      const user = result.rows[0];
+
+      // Log in the user after registration
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(500).send("Internal server error.");
+        }
+        console.log("Registration successful");
+        res.redirect("/home");
+      });
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Error during registration:", err);
+    res.status(500).send("Internal server error.");
   }
 });
+
 
 //-------------------------- RESET PASSWORD Route --------------------------//
 
