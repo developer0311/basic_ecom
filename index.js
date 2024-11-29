@@ -298,56 +298,81 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const { email, password, otp } = req.body; // Extract email, password, and OTP from request body
+  const { email, password, otp } = req.body;
 
   try {
-    // Check if the email and OTP match the stored session
+    // Validate session data for OTP and email
     const storedOtp = req.session.otp;
     const storedEmail = req.session.email;
 
     if (!storedOtp || !storedEmail) {
-      return res.status(400).send("OTP session expired. Please request a new OTP.");
+      return res.render("register", {
+        profile_name: "Guest",
+        homeActive: "active",
+        cartActive: "",
+        errorMessage: "OTP session expired. Please request a new OTP.",
+      });
     }
 
+    // Validate OTP and email
     const isOtpValid = await bcrypt.compare(otp, storedOtp);
-    if (!isOtpValid || email !== storedEmail) {
-      return res.status(400).send("Invalid OTP or email mismatch. Please try again.");
+    if (!isOtpValid) {
+      return res.render("register", {
+        profile_name: "Guest",
+        homeActive: "active",
+        cartActive: "",
+        errorMessage: "Invalid OTP. Please try again.",
+      });
+    }
+
+    if (email !== storedEmail) {
+      return res.render("register", {
+        profile_name: "Guest",
+        homeActive: "active",
+        cartActive: "",
+        errorMessage: "Email mismatch. Please use the correct email.",
+      });
     }
 
     // Check if the user is already registered
     const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-
     if (checkResult.rows.length > 0) {
-      return res.redirect("/login");
+      return res.redirect("/login"); // User exists, redirect to login
     }
 
     // Hash the password and register the user
-    bcrypt.hash(password, saltRounds, async (err, hash) => {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const result = await db.query(
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+      [email, hashedPassword]
+    );
+
+    const user = result.rows[0];
+
+    // Log in the user after registration
+    req.login(user, (err) => {
       if (err) {
-        console.error("Error hashing password:", err);
-        return res.status(500).send("Internal server error.");
+        console.error("Login error:", err);
+        return res.status(500).render("register", {
+          profile_name: "Guest",
+          homeActive: "active",
+          cartActive: "",
+          errorMessage: "An error occurred during login. Please try again.",
+        });
       }
 
-      // Insert the new user into the database
-      const result = await db.query(
-        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-        [email, hash]
-      );
-      const user = result.rows[0];
-
-      // Log in the user after registration
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Login error:", err);
-          return res.status(500).send("Internal server error.");
-        }
-        console.log("Registration successful");
-        res.redirect("/home");
-      });
+      console.log("Registration successful");
+      return res.redirect("/home");
     });
   } catch (err) {
     console.error("Error during registration:", err);
-    res.status(500).send("Internal server error.");
+    return res.status(500).render("register", {
+      profile_name: "Guest",
+      homeActive: "active",
+      cartActive: "",
+      errorMessage: "Something went wrong. Please try again later.",
+    });
   }
 });
 
