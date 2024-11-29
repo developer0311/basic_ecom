@@ -98,4 +98,7 @@ After ensuring nodemon is installed, start the application with the following co
     ```bash
     nodemon index.js
     ```
+
+---
+
 This will run the project on your localhost. By default, it will be available at http://localhost:3000, but you can configure the port in the .env file.
