@@ -17,6 +17,9 @@ CREATE TABLE products (
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    fisrt_name VARCHAR(50),
+    last_name VARCHAR(50),
+    mobile_number VARCHAR(15) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
