@@ -1,6 +1,6 @@
 # **Basic E-Commerce Application**
 
-A Node.js-based project for building a basic e-commerce platform, featuring user authentication with Google, PostgreSQL integration, **Add to Cart**, **Buy**, **Admin Login**, and **Email Notifications** via Nodemailer.
+A Node.js-based project for building a basic e-commerce platform, featuring **Add to Cart**, **Buy**, **Admin Login**, PostgreSQL integration, and **Email Notifications** via Nodemailer.
 
 ---
 
