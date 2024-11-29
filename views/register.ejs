@@ -9,17 +9,28 @@
 
           <!-- Makes POST request to /register route -->
           <form class="l-g-for" action="/register" method="POST">
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" name="username">
-            </div>
+            <div class="form-group mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                  <input type="email" class="form-control" id="email" name="email"
+                      placeholder="Enter your email" required>
+                  <button class="btn btn-primary" id="sendOtpButton" type="button">
+                      Send OTP
+                  </button>
+              </div>
+          </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control" name="password">
+              <input type="password" class="form-control" name="password" placeholder="Create your password">
             </div>
+            <div class="form-group mb-3">
+              <label for="otp" class="form-label">OTP</label>
+              <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+          </div>
             <button type="submit" class="btn btn-dark">Register</button>
           </form>
 
+          <div id="message" class="mt-3"></div>
         </div>
       </div>
     </div>
@@ -39,3 +50,44 @@
 </div>
 
 <%- include('partials/footer') %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+      const sendOtpButton = document.getElementById("sendOtpButton");
+      const emailInput = document.getElementById("email");
+      const messageDiv = document.getElementById("message");
+      const emailForm = document.getElementById("emailForm");
+      const otpForm = document.getElementById("otpForm");
+      const otpFormSubmit = document.getElementById("otpFormSubmit");
+
+      // Handle OTP request
+      sendOtpButton.addEventListener("click", async () => {
+          const email = emailInput.value.trim();
+
+          if (!email) {
+              messageDiv.innerHTML = `<div class="alert alert-danger">Please enter a valid email.</div>`;
+              return;
+          }
+
+          try {
+              const response = await fetch("/send-otp", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ email }),
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                  messageDiv.innerHTML = `<div class="alert alert-success">OTP sent successfully to ${email}!</div>`;
+              } else {
+                  messageDiv.innerHTML = `<div class="alert alert-danger">${data.error || "Failed to send OTP."}</div>`;
+              }
+          } catch (err) {
+              console.error("Error sending OTP:", err);
+              messageDiv.innerHTML = `<div class="alert alert-danger">Something went wrong. Please try again later.</div>`;
+          }
+      });
+  });
+</script>

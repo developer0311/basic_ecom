@@ -355,15 +355,15 @@ app.post("/send-otp", async (req, res) => {
     // Generate a random 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Store OTP in session (you can also use a database or cache)
-    req.session.otp = otp;
+    // Hash the OTP before storing it
+    const hashedOtp = await bcrypt.hash(otp, 10);
+
+    // Store hashed OTP and email in session
+    req.session.otp = hashedOtp;
     req.session.email = email;
 
-    // Configure SMTP transporter (For Gmail service)
+    // Configure SMTP transporter
     const transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for port 465, false for other ports
       service: "Gmail",
       auth: {
         user: process.env.SMTP_USER,
@@ -374,7 +374,7 @@ app.post("/send-otp", async (req, res) => {
     // Email options
     const mailOptions = {
       from: process.env.SMTP_USER,
-      to: email, // Use the email from the request body
+      to: email,
       subject: "Your OTP Code",
       text: `Your OTP code is ${otp}. This code is valid for 10 minutes.`,
     };
@@ -392,22 +392,26 @@ app.post("/send-otp", async (req, res) => {
   }
 });
 
+
 // when click on submit then check the user given otp with the generated otp, if matched then render new_password.ejs page
 app.post("/check-otp", async (req, res) => {
   const { otp } = req.body;
 
-  // Retrieve OTP and email from session
-  const storedOtp = req.session.otp;
+  // Retrieve hashed OTP and email from session
+  const hashedOtp = req.session.otp;
   const email = req.session.email;
 
-  if (!storedOtp || !email) {
+  if (!hashedOtp || !email) {
     return res.status(400).json({
       success: false,
       error: "OTP session expired. Please request a new OTP.",
     });
   }
 
-  if (otp === storedOtp) {
+  // Verify the OTP
+  const isMatch = await bcrypt.compare(otp, hashedOtp);
+
+  if (isMatch) {
     // OTP is correct, render the new password page
     active_page("home");
     res.render("new_password", {
@@ -424,6 +428,7 @@ app.post("/check-otp", async (req, res) => {
     });
   }
 });
+
 
 app.post("/reset-password", async (req, res) => {
   const { password, confirm_password } = req.body;
