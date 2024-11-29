@@ -9,6 +9,7 @@ import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
 import nodemailer from "nodemailer";
+import Razorpay from 'razorpay';
 import "dotenv/config";
 
 const app = express();
@@ -16,6 +17,8 @@ const port = process.env.SERVER_PORT;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const saltRounds = 10;
 const admin_password = process.env.ADMIN_PASSWORD;
+const RAZORPAY_ID_KEY = process.env.RAZORPAY_ID_KEY;
+const RAZORPAY_SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;
 let home_active = "active";
 let cart_active = "";
 
@@ -35,6 +38,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+const razorpayInstance = new Razorpay({
+  key_id: RAZORPAY_ID_KEY,
+  key_secret: RAZORPAY_SECRET_KEY
+});
 
 const db = new pg.Client({
   user: process.env.DB_USER,
@@ -66,6 +74,9 @@ let active_page = (pageName) => {
 
 app.get("/search", async (req, res) => {
   const searchQuery = req.query.query; // Get the search term from the query string
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login"); // Redirect to login if not authenticated
+  }
 
   try {
     if (!searchQuery) {
@@ -143,6 +154,9 @@ app.get("/home", async (req, res) => {
 //-------------------------- SPECIFIC ITEMS Routes --------------------------//
 
 app.get("/specific", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login"); // Redirect to login if not authenticated
+  }
   active_page("home");
   try {
     const productId = parseInt(req.query.id);
@@ -508,13 +522,54 @@ app.post("/reset-password", async (req, res) => {
 });
 
 
-//-------------------------- SPECIFIC ITEM Route --------------------------//
+//-------------------------- PAYMENT Route --------------------------//
 
-app.get("/specific", (req, res) => {
-  active_page("home");
-  res.render(__dirname + "/views/specific.ejs", {
-    profile_name: username || "Guest",
-  });
+
+// POST /createOrder route
+app.post("/createOrder", async (req, res) => {
+  const user = req.user;
+  let username = get_username(user.email);
+  try {
+      const { amount, name, description } = req.body;
+
+      // Ensure `amount` is a valid number
+      if (!amount || isNaN(amount)) {
+          return res.status(400).send({ success: false, msg: "Invalid amount provided." });
+      }
+
+      // Razorpay requires the amount in the smallest currency unit (paise for INR)
+      const orderAmount = amount * 100;
+
+      const options = {
+          amount: orderAmount, // Amount in paise
+          currency: "INR",
+          receipt: `receipt_${Date.now()}`, // Unique receipt identifier
+      };
+
+      // Create the Razorpay order
+      razorpayInstance.orders.create(options, (err, order) => {
+          if (!err) {
+              res.status(200).send({
+                  success: true,
+                  msg: "Order Created",
+                  order_id: order.id,
+                  amount: orderAmount,
+                  key_id: RAZORPAY_ID_KEY,
+                  product_name: name,
+                  description: description,
+                  contact: "8567345632", // Replace with dynamic values if needed
+                  name: username, // Replace with dynamic values if needed
+                  email: user.email, // Replace with dynamic values if needed
+              });
+          } else {
+              console.error(err);
+              res.status(400).send({ success: false, msg: "Something went wrong!" });
+          }
+      });
+  } catch (error) {
+      console.error("Error in creating order:", error.message);
+      res.status(500).send({ success: false, msg: "Server error." });
+  }
 });
 
 //-------------------------- LOGOUT Route --------------------------//
