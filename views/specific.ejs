@@ -1,39 +1,107 @@
 <%- include('partials/header') %>
 
-    <section class="specific-item">
-        <div class="item-image">
-            <div class="detail-image">
-                <img src="<%= product.image_url %>" alt="">
-            </div>
-            <div class="deal-option">
-                <a href="/cart/add?productId=<%= product.id %>" class="cart"><i class='bx bx-cart-alt' style='color:#ffffff'></i>Add to cart</a>
-                <a href="" class="buy"><i class='bx bxs-hot' style='color:#ffffff'></i>Buy now</a>
+<section class="specific-item">
+    <div class="item-image">
+        <div class="detail-image">
+            <img src="<%= product.image_url %>" alt="">
+        </div>
+        <div class="deal-option">
+            <a href="/cart/add?productId=<%= product.id %>" class="cart"><i class='bx bx-cart-alt' style='color:#ffffff'></i>Add to cart</a>
+            <form class="pay-form">
+                <input type="hidden" name="name" value="<%= product.name %>">
+                <input type="hidden" name="amount" value="<%= product.price %>">
+                <input type="hidden" name="description" value="<%= product.description %>">
+                <button type="submit" class="buy">
+                    <i class='bx bxs-hot' style='color:#ffffff'></i>Buy now
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="item-details">
+        <div class="item-name">
+            <h3><%= product.name %></h3>
+        </div>
+        <div class="price-details">
+            <p class="special">Special price</p>
+            <div class="item-price">
+                <p class="special-price">₹<%= product.price %></p>
+                <p class="actual-price">₹<%= product.max_price %></p>
+                <p class="discount">20% off</p>
             </div>
         </div>
 
-        <div class="item-details">
-            <div class="item-name">
-                <h3><%= product.name %></h3>
-            </div>
-            <div class="price-details">
-                <p class="special">Special price</p>
-                <div class="item-price">
-                    <p class="special-price">₹<%= product.price %></p>
-                    <p class="actual-price">₹<%= product.max_price %></p>
-                    <p class="discount">20% off</p>
-                </div>
-            </div>
-
-            <div class="item-more-details">
-               <ul>
-                <li><%= product.description %></li>
-               </ul>
-            </div>
+        <div class="item-more-details">
+           <ul>
+            <li><%= product.description %></li>
+           </ul>
         </div>
+    </div>
+</section>
 
+<%- include('partials/footer') %>
 
-    </section>
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const payForm = document.querySelector('.pay-form');
+    payForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
+        // Collect form data
+        const formData = new FormData(payForm);
+        const data = Object.fromEntries(formData.entries());
 
-
-    <%- include('partials/footer') %>
+        // Make a POST request to the server
+        fetch('/createOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(res => {
+            if (res.success) {
+                const options = {
+                    key: res.key_id,
+                    amount: res.amount,
+                    currency: 'INR',
+                    name: res.product_name,
+                    description: res.description,
+                    image: 'https://dummyimage.com/600x400/000/fff',
+                    order_id: res.order_id,
+                    handler: function (response) {
+                        alert('Payment Succeeded');
+                        // Optionally redirect
+                        // window.location.href = "/";
+                    },
+                    prefill: {
+                        contact: res.contact,
+                        name: res.name,
+                        email: res.email
+                    },
+                    notes: {
+                        description: res.description
+                    },
+                    theme: {
+                        color: '#2300a3'
+                    }
+                };
+                const razorpayObject = new Razorpay(options);
+                razorpayObject.on('payment.failed', function (response) {
+                    alert('Payment Failed');
+                });
+                razorpayObject.open();
+            } else {
+                alert(res.msg);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    });
+});
+</script>

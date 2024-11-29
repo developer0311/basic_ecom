@@ -2,7 +2,7 @@
 
 /*========================== < 1350px ==========================*/
 
-@media only screen and (max-width: 1350px){
+@media only screen and (max-width: 1400px){
 
     /*-------------------------- SPECIFIC.ejs --------------------------*/
 
@@ -22,8 +22,8 @@
         width: 60%;
     }
     
-    .specific-item .item-image .deal-option a{
-        width: 170px;
+    .specific-item .item-image .deal-option > *{
+        width: 200px;
     }
     
     .specific-item .item-details{
@@ -134,11 +134,15 @@
 
     /*-------------------------- SPECIFIC.ejs --------------------------*/
 
-    .specific-item .item-image .deal-option a{
+    .specific-item .item-image .deal-option > *{
         font-size: 15px;
         width: 130px;
         margin: 0px 10px;
         padding: 7px 14px;
+    }
+
+    .specific-item .item-image .deal-option .buy{
+        font-size: 15px;
     }
 }
 

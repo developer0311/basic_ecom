@@ -231,7 +231,7 @@ footer i{
     justify-content: center;
 }
 
-.specific-item .item-image .deal-option a{
+.specific-item .item-image .deal-option > *{
     text-decoration: none;
     margin: 0px 20px;
     padding: 10px 20px;
@@ -245,7 +245,18 @@ footer i{
     background-color: #ff9f00;
 }
 
+.specific-item .item-image .deal-option .pay-form{
+    padding: 0;
+    margin: 0px 20px;   
+}
+
 .specific-item .item-image .deal-option .buy{
+    outline: none;
+    border: none;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    font-size: 20px;
     background-color: #fb641b;
 }
 
