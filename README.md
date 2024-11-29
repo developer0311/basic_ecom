@@ -28,6 +28,11 @@ SESSION_SECRET=TOPSECRETWORD
 #------------------------------- NODEMAILER CREDENTIALS -------------------------------#
 SMTP_USER=YOUR_EMAIL
 SMTP_PASS=YOUR_PASSKEY
+
+# ------------------------- RAZORPAY CREDENTIALS  -------------------------
+
+RAZORPAY_ID_KEY=YOUR_RAZORPAY_ID_KEY
+RAZORPAY_SECRET_KEY=YOUR_RAZORPAY_SECRET_KEY
 ```
 
 ---
