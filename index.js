@@ -348,10 +348,27 @@ app.post("/register", async (req, res) => {
       });
     }
 
-    // Check if the user is already registered
-    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    // Check if the user is already registered by email or mobile number
+    const checkResult = await db.query(
+      "SELECT * FROM users WHERE email = $1 OR mobile_number = $2",
+      [email, mobile_number]
+    );
+
     if (checkResult.rows.length > 0) {
-      return res.redirect("/login"); // User exists, redirect to login
+      // Determine the specific error
+      const existingUser = checkResult.rows[0];
+      let errorMessage = "An account with these details already exists.";
+      if (existingUser.email === email) {
+        errorMessage = "Email is already registered.";
+      } else if (existingUser.mobile_number === mobile_number) {
+        errorMessage = "Mobile number is already registered.";
+      }
+      return res.render("register", {
+        profile_name: "Guest",
+        homeActive: "active",
+        cartActive: "",
+        errorMessage: errorMessage,
+      });
     }
 
     // Hash the password and register the user
@@ -390,6 +407,7 @@ app.post("/register", async (req, res) => {
     });
   }
 });
+
 
 
 //-------------------------- RESET PASSWORD Route --------------------------//
