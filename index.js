@@ -77,6 +77,9 @@ app.get("/search", async (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect("/login"); // Redirect to login if not authenticated
   }
+  const username = req.isAuthenticated()
+    ? get_username(req.user.email)
+    : "Guest"; // Check if the user is authenticated
 
   try {
     if (!searchQuery) {
@@ -86,7 +89,12 @@ app.get("/search", async (req, res) => {
       "SELECT * FROM products WHERE name ILIKE $1",
       [`%${searchQuery}%`]
     );
-    res.render("searchResults", { products: result.rows, query: searchQuery });
+    if (result.rows.length == 0) {
+      return res.redirect("/home")
+    }
+    res.render(__dirname + "/views/specific", { product: result.rows[0], query: searchQuery, profile_name: username || "Guest",
+      homeActive: home_active,
+      cartActive: cart_active, });
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).send("Internal Server Error");
@@ -103,6 +111,7 @@ app.get("/", (req, res) => {
     profile_name: username,
     homeActive: home_active,
     cartActive: cart_active,
+    hide_footer:"none",
   }); // Render the home view
 });
 
@@ -286,6 +295,7 @@ app.get("/login", (req, res) => {
     profile_name: username,
     homeActive: home_active,
     cartActive: cart_active,
+    hide_footer:"none",
   });
 });
 
@@ -308,6 +318,7 @@ app.get("/register", (req, res) => {
     profile_name: username,
     homeActive: home_active,
     cartActive: cart_active,
+    hide_footer:"none",
   });
 });
 
