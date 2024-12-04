@@ -63,7 +63,11 @@ p {
 }
 
 main {
-  min-height: calc(100vh - 70px - 67px);
+  min-height: calc(100vh - 70px - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding-top: 30px;
 }
 
@@ -256,114 +260,120 @@ footer i {
 /*-------------------------- SPECIFIC.ejs --------------------------*/
 
 .specific-item {
-  min-height: calc((100vh - 70px - 97px - 200px));
-  margin-top: 80px;
-  display: flex;
-  align-items: center;
-  padding: 0px 20px;
-}
-
-.specific-item .item-image {
-  padding: 50px 20px;
-  width: 40%;
-  margin-right: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.specific-item .item-image .detail-image {
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: center;
-}
-
-.specific-item .item-image img {
-  width: 90%;
-}
-
-.specific-item .item-image .deal-option {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.specific-item .item-image .deal-option > * {
-  text-decoration: none;
-  margin: 0px 20px;
-  padding: 10px 20px;
-  color: #fff;
-  font-size: 20px;
-  width: 40%;
-  text-align: center;
-}
-
-.specific-item .item-image .deal-option .cart {
-  background-color: #ff9f00;
-}
-
-.specific-item .item-image .deal-option .pay-form {
-  padding: 0;
-  margin: 0px 20px;
-}
-
-.specific-item .item-image .deal-option .buy {
-  outline: none;
-  border: none;
-  height: 100%;
-  width: 100%;
-  color: #fff;
-  font-size: 20px;
-  background-color: #fb641b;
-}
-
-.specific-item p {
-  margin-bottom: 5px;
-}
-
-.specific-item .item-details {
-  width: 60%;
-  padding: 0px 40px;
-}
-
-.specific-item .item-details .item-name h3 {
-  font-size: 25px;
-}
-
-.specific-item .price-details .special {
-  color: rgb(5, 189, 5);
-  font-weight: bolder;
-}
-
-.specific-item .price-details .item-price {
-  display: flex;
-  align-items: baseline;
-}
-
-.specific-item .price-details .item-price > * {
-  margin-right: 20px;
-}
-
-.specific-item .price-details .item-price .special-price {
-  font-size: 30px;
-}
-
-.specific-item .item-details .price-details .item-price .actual-price {
-  text-decoration: line-through;
-}
-
-.specific-item .item-details .price-details .item-price .discount {
-  color: rgb(5, 189, 5);
-  font-weight: bolder;
-}
-
-.specific-item .item-details .item-more-details ul {
-  padding: 0;
-}
-.specific-item .item-details .item-more-details ul li {
-  list-style: none;
-}
+    min-height: calc(100vh - 70px - 97px - 200px);
+    display: flex;
+    align-items: center;
+    padding: 0px 20px;
+  }
+  
+  .specific-item .item-image {
+    padding: 50px 20px;
+    width: 40%;
+    margin-right: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .specific-item .item-image .detail-image {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    height: 400px; /* Fixed height for all images */
+    width: 400px; /* Fixed height matching item-image */
+  }
+  
+  .specific-item .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the image covers the entire area without distortion */
+  }
+  
+  .specific-item .item-image .deal-option {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .specific-item .item-image .deal-option > * {
+    text-decoration: none;
+    margin: 0px 20px;
+    padding: 10px 20px;
+    color: #fff;
+    font-size: 20px;
+    width: 40%;
+    text-align: center;
+  }
+  
+  .specific-item .item-image .deal-option .cart {
+    background-color: #ff9f00;
+  }
+  
+  .specific-item .item-image .deal-option .pay-form {
+    padding: 0;
+    margin: 0px 20px;
+  }
+  
+  .specific-item .item-image .deal-option .buy {
+    outline: none;
+    border: none;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    font-size: 20px;
+    background-color: #fb641b;
+  }
+  
+  .specific-item p {
+    margin-bottom: 5px;
+  }
+  
+  .specific-item .item-details {
+    width: 60%;
+    padding: 0px 40px;
+  }
+  
+  .specific-item .item-details .item-name h3 {
+    font-size: 25px;
+  }
+  
+  .specific-item .price-details .special {
+    color: rgb(5, 189, 5);
+    font-weight: bolder;
+  }
+  
+  .specific-item .price-details .item-price {
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .specific-item .price-details .item-price > * {
+    margin-right: 20px;
+  }
+  
+  .specific-item .price-details .item-price .special-price {
+    font-size: 30px;
+  }
+  
+  .specific-item .item-details .price-details .item-price .actual-price {
+    text-decoration: line-through;
+  }
+  
+  .specific-item .item-details .price-details .item-price .discount {
+    color: rgb(5, 189, 5);
+    font-weight: bolder;
+  }
+  
+  .specific-item .item-details .item-more-details ul {
+    padding: 0;
+  }
+  
+  .specific-item .item-details .item-more-details ul li {
+    list-style: none;
+  }
+  
 
 /*-------------------------- LOGIN.ejs & REGISTER.ejs --------------------------*/
 
