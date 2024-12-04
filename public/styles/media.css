@@ -1,177 +1,219 @@
-
-
-/*========================== < 1350px ==========================*/
-
-@media only screen and (max-width: 1400px){
-
+/*========================== < 1400px ==========================*/
+@media only screen and (max-width: 1400px) {
     /*-------------------------- SPECIFIC.ejs --------------------------*/
-
-    .specific-item{
-        min-height: calc((100vh - 70px - 97px));
-        margin-top: 0px;
-        margin-bottom: 30px;
-        flex-direction: column;
+  
+    .specific-item {
+      min-height: calc((100vh - 70px - 97px));
+      margin-top: 0px;
+      margin-bottom: 30px;
+      flex-direction: column;
     }
-    
-    .specific-item .item-image{
-        width: 100%;
-        margin-right: 0;
+  
+    .specific-item .item-image {
+      width: 100%;
+      margin-right: 0;
     }
-
-    .specific-item .item-image img{
-        width: 60%;
+  
+    .specific-item .item-image img {
+      width: 60%;
     }
-    
-    .specific-item .item-image .deal-option > *{
-        width: 200px;
+  
+    .specific-item .item-image .deal-option > * {
+      width: 200px;
     }
-    
-    .specific-item .item-details{
-        width: 100%;
-        padding: 0px 40px;
+  
+    .specific-item .item-details {
+      width: 100%;
+      padding: 0px 40px;
     }
-    
+  
     .specific-item .item-details .item-more-details ul {
-        margin-bottom: 40px;
+      margin-bottom: 40px;
     }
-}
-
-
-
-/*========================== < 950px ==========================*/
-
-@media only screen and (max-width: 950px){
-    
+  }
+  
+  /*========================== < 1200px ==========================*/
+  @media only screen and (max-width: 1200px) {
     /*-------------------------- INDEX.ejs --------------------------*/
-    
+  
     .home-items-section .home-product-cards .card-items .card p {
-        font-size: 12px;
+      font-size: 12px;
+      padding: 0;
     }
+  
+    /* Show 4 cards per row */
     .home-items-section .home-product-cards .card-items {
-        flex: 0 0 calc(20% - 10px);
-        margin: 0px 5px;
+      flex: 0 0 calc(25% - 10px);  /* 4 cards in view */
+      margin: 0px 5px;
     }
-}
-
-
-
-/*========================== < 750px ==========================*/
-
-@media only screen and (max-width: 750px){
-    
+  
+    .home-items-section .home-product-cards .card-items .card .card-text {
+      margin-bottom: 10px;
+    }
+  }
+  
+  /*========================== < 950px ==========================*/
+  @media only screen and (max-width: 950px) {
+    main {
+      min-height: calc(100vh - 70px - 90px);
+    }
+  
+    /*-------------------------- HOME.ejs --------------------------*/
+  
+    .lead {
+      font-size: 15px;
+    }
+  
     /*-------------------------- INDEX.ejs --------------------------*/
-    
+  
+    /* Show 3 cards in view for smaller screens */
+    .home-items-section .home-product-cards .card-items {
+      flex: 0 0 calc(33.33% - 10px); /* 3 cards in view */
+      margin: 0px 5px;
+    }
+  
     .home-items-section .home-product-cards .card-items .card p {
-        font-size: 10px;
+      font-size: 12px;
     }
-
-    .home-items-section .home-product-cards .card-items .card .card-body{
-        padding: 1px;
+  
+    .home-items-section .home-product-cards .card-items .card .card-text {
+      margin-bottom: 10px;
     }
-    
-    .home-items-section .home-product-cards .card-items .card img {
-        padding: 5px;
-    }
-}
-
-
-
-/*========================== < 650px ==========================*/
-
-@media only screen and (max-width: 650px){
-    
-    /*-------------------------- BASIC --------------------------*/
-
-    section{
-        width: 99vw;
-    }
-
-
-    /*-------------------------- FOOTER --------------------------*/
-
-    .custom-footer{
-        border-top: 1px solid var(--footer-text-color) !important;
-    }
-    
-    footer span{
-        font-size: 12px;
-        margin-bottom: 0px;
-    }
-    footer i{
-        font-size: 12px;
-    }
-
-    
+  }
+  
+  /*========================== < 750px ==========================*/
+  @media only screen and (max-width: 768px) {
     /*-------------------------- INDEX.ejs --------------------------*/
-    
+    .home-container-2 .carousel-item {
+      height: 150px;
+    }
+  
+    .home-container-2 .carousel-item img {
+      height: 150px;
+      object-fit: cover;
+    }
+  
+    .home-items-section .home-product-cards .card-items .card p {
+      font-size: 10px;
+    }
+  
+    .home-items-section .home-product-cards .card-items {
+      flex: 0 0 calc(33.33% - 10px); /* Three cards in view on mobile */
+    }
+  
+    .home-items-section .home-product-cards .card-items .card .card-body {
+      padding: 1px;
+    }
+  
+    .home-items-section .home-product-cards .card-items .card img {
+      padding: 5px;
+    }
+  
+    .home-items-section .carousel-btn {
+      padding: 20px 10px;
+    }
+  }
+  
+  /*========================== < 650px ==========================*/
+  @media only screen and (max-width: 650px) {
+    /*-------------------------- BASIC --------------------------*/
+  
+    section {
+      width: 99vw;
+    }
+  
+    /*-------------------------- FOOTER --------------------------*/
+  
+    .custom-footer {
+      border-top: 1px solid var(--footer-text-color) !important;
+    }
+  
+    footer span {
+      font-size: 12px;
+      margin-bottom: 0px;
+    }
+  
+    footer i {
+      font-size: 12px;
+    }
+  
+    /*-------------------------- INDEX.ejs --------------------------*/
+  
     .carousel-indicators,
     .carousel-control-prev-icon,
-    .carousel-control-next-icon{
-        display: none;
+    .carousel-control-next-icon {
+      display: none;
     }
-    
-    .home-items-section{
-        padding: 10px;
+  
+    .home-items-section {
+      padding: 10px;
     }
-    
+  
     .home-items-section .home-product-cards .card-items {
-        flex: 0 0 calc(20% - 10px); /* Five cards per row */
-        margin: 0 5px; /* Adjust margin for smaller screens */
+      margin: 0 5px;
     }
-
+  
     .home-items-section .home-product-cards .card-items .card .img-container {
-        height: 150px; /* Adjust height of the image container */
+      height: 150px;
     }
-
+  
     .home-items-section .home-product-cards .card-body {
-        padding: 5px; /* Reduce padding */
+      padding: 5px;
     }
-
+  
     .home-items-section .home-product-cards .card-items .card p {
-        font-size: 14px; /* Adjust font size for smaller screens */
+      font-size: 10px;
     }
-
-
+  
     /*-------------------------- SPECIFIC.ejs --------------------------*/
-
-    .specific-item .item-image .deal-option > *{
-        font-size: 15px;
-        width: 130px;
-        margin: 0px 10px;
-        padding: 7px 14px;
+  
+    .specific-item .item-image .deal-option > * {
+      font-size: 15px;
+      width: 130px;
+      margin: 0px 10px;
+      padding: 7px 14px;
     }
-
-    .specific-item .item-image .deal-option .buy{
-        font-size: 15px;
+  
+    .specific-item .item-image .deal-option .buy {
+      font-size: 15px;
     }
-}
-
-
-
-/*========================== < 435px ==========================*/
-
-@media only screen and (max-width: 435px){
-    .specific-item{
-        padding: 0px 5px;
+  }
+  
+  /*========================== < 576px ==========================*/
+  @media only screen and (max-width: 576px) {
+    /*-------------------------- SEARCH_RESULTS.ejs --------------------------*/
+  
+    .products-results .card-items {
+      flex: 1 1 100%; /* Show 1 item per row on very small screens */
+      max-width: 100%;
     }
-
-    .specific-item .item-image .deal-option{
-        flex-direction: column;
+  }
+  
+  /*========================== < 435px ==========================*/
+  @media only screen and (max-width: 435px) {
+    /*-------------------------- SPECIFIC.ejs --------------------------*/
+  
+    .specific-item {
+      padding: 0px 5px;
     }
-
-    .specific-item .item-image .deal-option a{
-        width: 100% ;
-        margin: 0;
-        margin-bottom: 10px;
+  
+    .specific-item .item-image .deal-option {
+      flex-direction: column;
     }
-
-    .specific-item .item-details{
-        width: 95%;
-        padding: 0px 5px;
+  
+    .specific-item .item-image .deal-option a {
+      width: 100%;
+      margin: 0;
+      margin-bottom: 10px;
     }
-
+  
+    .specific-item .item-details {
+      width: 95%;
+      padding: 0px 5px;
+    }
+  
     .specific-item .item-details .item-more-details ul li {
-        font-size: 12px;
+      font-size: 12px;
     }
-}
-
+  }
+  

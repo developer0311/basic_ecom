@@ -125,65 +125,112 @@ footer i{
     padding: 20px;
 }
 
+/* Carousel Wrapper Styling */
 .home-items-section .home-product-cards-wrapper {
     display: flex;
     align-items: center;
     position: relative;
     width: 100%;
-    overflow: hidden; /* Hide overflow for the carousel effect */
+    overflow: hidden;
+    padding: 20px 0; /* Add padding for spacing around the carousel */
+    background-color: #f9f9f9; /* Light background for contrast */
 }
 
+/* Carousel Cards Container */
 .home-items-section .home-product-cards {
     display: flex;
     transition: transform 0.5s ease;
-    width: 100%; /* Full width of the parent container */
+    width: 100%;
 }
 
+/* Individual Card Styling */
 .home-items-section .home-product-cards .card-items {
-    flex: 0 0 calc(20% - 30px); /* Adjust as needed for responsive design */
-    margin: 0 15px; /* Maintain horizontal margin */
-    box-sizing: border-box; /* Include padding and border in width calculation */
+    flex: 0 0 calc(20% - 30px); /* Default: 5 cards */
+    margin: 0 15px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .home-items-section .home-product-cards .card-items .card {
-    display: flex; /* Enable flexbox for the card */
-    flex-direction: column; /* Align children in a column */
-    justify-content: space-between; /* Space between the image and text */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
-    height: 100%; /* Ensure the card takes full height */
+    height: 100%;
     text-decoration: none;
     cursor: pointer;
-    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
-    border-radius: 5px; /* Optional: Rounded corners */
-    overflow: hidden; /* Prevent overflow of text */
+    border: 1px solid #e0e0e0; 
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ffffff; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.home-items-section .home-product-cards .card-items .card:hover {
+    transform: translateY(-10px); 
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); 
+    border-color: #007bff;
 }
 
 .home-items-section .home-product-cards .card-items .card .img-container {
-    width: 100%; /* Ensure the container takes full width */
-    height: 200px; /* Fixed height for the image container */
+    width: 100%;
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Hide any overflow */
+    background-color: #f4f4f4;
+    overflow: hidden;
 }
 
 .home-items-section .home-product-cards .card-items .card .img-container img {
-    width: auto; /* Allow image to scale proportionally */
-    height: 100%; /* Set height to 100% of the container */
-    max-width: 100%; /* Prevent the image from exceeding the container width */
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain; 
 }
 
 .home-items-section .home-product-cards .card-body {
-    padding: 10px;
-    display: flex; /* Enable flexbox for the body */
-    flex-direction: column; /* Align text vertically */
-    flex-grow: 1; /* Allow the card body to grow and fill the space */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 8px; 
+    text-align: center;
 }
 
-.home-items-section .home-product-cards .card-items .card p {
+.home-items-section .home-product-cards .card-body p {
     font-size: 15px;
-    text-align: center;
-    margin: 5px 0; /* Add a margin for better spacing */
+    font-weight: 500;
+    color: #333; 
+    margin: 0;
+    overflow: hidden; 
+    height: 19px;
+}
+
+.home-items-section .home-product-cards .card-body .price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.home-items-section .home-product-cards .card-body .add-to-cart-btn {
+    margin-top: auto;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.home-items-section .home-product-cards .card-body .add-to-cart-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
 }
 
 .carousel-btn {

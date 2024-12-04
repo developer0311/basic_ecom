@@ -47,13 +47,24 @@ carousels.forEach((carousel) => {
 
     // Initialize variables
     let currentIndex = 0;
-    const cardsToShow = 5; // Number of visible cards at a time
+    let cardsToShow = 5; // Default visible cards (for >1200px)
     const totalCards = cardItems.length;
 
     // Function to calculate the width of the visible cards
     function calculateCardWidth() {
         const containerWidth = cardsContainer.offsetWidth;
         return containerWidth / cardsToShow; // Width for each card based on container
+    }
+
+    // Adjust the number of cards shown based on screen width
+    function adjustCardsToShow() {
+        if (window.innerWidth < 950) {
+            cardsToShow = 3; // 3 cards in view for smaller screens
+        } else if (window.innerWidth < 1200) {
+            cardsToShow = 4; // 4 cards in view between 950px and 1200px
+        } else {
+            cardsToShow = 5; // 5 cards in view for larger screens
+        }
     }
 
     // Function to update button visibility based on current index
@@ -89,7 +100,14 @@ carousels.forEach((carousel) => {
     });
 
     // Initialize the carousel on page load
+    adjustCardsToShow(); // Adjust the number of visible cards based on screen width
     updateButtons(); // Set initial button visibility
     slideCards(); // Slide to the starting position
+
+    // Re-adjust the layout when the window is resized
+    window.addEventListener('resize', () => {
+        adjustCardsToShow();
+        slideCards(); // Adjust sliding after resize
+    });
 });
 
