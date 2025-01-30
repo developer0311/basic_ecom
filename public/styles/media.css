@@ -206,10 +206,20 @@
       margin: 0;
       margin-bottom: 10px;
     }
+
+    .specific-item .item-image .deal-option .pay-form {
+      width: 100%;
+      height: 36.5px;
+      margin: 0;
+    }
   
     .specific-item .item-details {
       width: 95%;
       padding: 0px 5px;
+    }
+
+    .specific-item .item-details .item-price{
+      flex-direction: column;
     }
   
     .specific-item .item-details .item-more-details ul li {
